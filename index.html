@@ -66,7 +66,7 @@
                 showButtons: false,
                 possibleGrades: []
             });
-            const [srednieOcenStudia, setSrednieOcenStudia] = useState(3.00);
+            const [srednieOcenStudia, setSrednieOcenStudia] = useState('');
             const [ocenaPraca, setOcenaPraca] = useState('');
             const [deferredPrompt, setDeferredPrompt] = useState(null);
             const [showInstallButton, setShowInstallButton] = useState(false);
@@ -125,7 +125,7 @@
                     showButtons: false,
                     possibleGrades: []
                 });
-                setSrednieOcenStudia(3.00);
+                setSrednieOcenStudia('');
                 setOcenaPraca('');
                 setActiveTab('ocenianie');
             };
@@ -151,9 +151,10 @@
 
             const calculateDiplomaGrade = () => {
                 const finalExamGrade = calculateFinalExamGrade();
-                if (!finalExamGrade || !ocenaPraca) return null;
+                if (!finalExamGrade || !ocenaPraca || !srednieOcenStudia) return null;
                 
-                const weighted = (srednieOcenStudia * 0.6) + (finalExamGrade * 0.3) + (parseFloat(ocenaPraca) * 0.1);
+                const avgGrade = parseFloat(srednieOcenStudia);
+                const weighted = (avgGrade * 0.6) + (finalExamGrade * 0.3) + (parseFloat(ocenaPraca) * 0.1);
                 
                 if (weighted < 3.25) return 3.0;
                 if (weighted < 3.75) return 3.5;
@@ -312,27 +313,34 @@
                                 React.createElement('div', null,
                                     React.createElement('label', { className: "block text-sm font-medium text-gray-700 mb-2" }, "Średnia ocen ze studiów"),
                                     React.createElement('input', {
-                                        type: "number",
-                                        min: "3.00",
-                                        max: "5.00",
-                                        step: "0.01",
-                                        value: srednieOcenStudia.toFixed(2),
+                                        type: "text",
+                                        inputMode: "decimal",
+                                        value: srednieOcenStudia,
                                         onChange: (e) => {
-                                            const value = parseFloat(e.target.value);
-                                            if (value >= 3.00 && value <= 5.00) {
+                                            const value = e.target.value;
+                                            // Allow empty, numbers, and one decimal point
+                                            if (value === '' || /^\d*\.?\d*$/.test(value)) {
                                                 setSrednieOcenStudia(value);
                                             }
                                         },
                                         onBlur: (e) => {
-                                            const value = parseFloat(e.target.value);
-                                            if (value < 3.00) {
-                                                setSrednieOcenStudia(3.00);
-                                            } else if (value > 5.00) {
-                                                setSrednieOcenStudia(5.00);
+                                            const value = e.target.value;
+                                            if (value === '') {
+                                                return; // Allow empty field
+                                            }
+                                            const num = parseFloat(value);
+                                            if (isNaN(num)) {
+                                                setSrednieOcenStudia('');
+                                            } else if (num < 3.00) {
+                                                setSrednieOcenStudia('3.00');
+                                            } else if (num > 5.00) {
+                                                setSrednieOcenStudia('5.00');
+                                            } else {
+                                                setSrednieOcenStudia(num.toFixed(2));
                                             }
                                         },
-                                        className: "w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 focus:outline-none",
-                                        placeholder: "Wprowadź ocenę (3.00 - 5.00)"
+                                        className: "w-full p-3 border-2 border-gray-300 rounded-md focus:border-blue-500 focus:outline-none text-lg",
+                                        placeholder: "np. 4.25"
                                     })
                                 ),
                                 React.createElement('div', null,
@@ -365,8 +373,8 @@
                                 React.createElement('tbody', null,
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Ocena ze studiów"),
-                                        React.createElement('td', { className: "p-2" }, srednieOcenStudia.toFixed(2)),
-                                        React.createElement('td', { className: "p-2" }, (srednieOcenStudia * 0.6).toFixed(2))
+                                        React.createElement('td', { className: "p-2" }, srednieOcenStudia ? parseFloat(srednieOcenStudia).toFixed(2) : '—'),
+                                        React.createElement('td', { className: "p-2" }, srednieOcenStudia ? (parseFloat(srednieOcenStudia) * 0.6).toFixed(2) : '—')
                                     ),
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Ocena z egzaminu"),
@@ -381,8 +389,8 @@
                                     React.createElement('tr', { className: "border-t-2 border-gray-300 bg-gray-50" },
                                         React.createElement('td', { className: "p-2 font-bold", colSpan: "2" }, "Suma ważona:"),
                                         React.createElement('td', { className: "p-2 font-bold" },
-                                            calculateFinalExamGrade() ? 
-                                                ((srednieOcenStudia * 0.6) + (calculateFinalExamGrade() * 0.3) + (parseFloat(ocenaPraca) * 0.1)).toFixed(2) 
+                                            calculateFinalExamGrade() && srednieOcenStudia && ocenaPraca ? 
+                                                ((parseFloat(srednieOcenStudia) * 0.6) + (calculateFinalExamGrade() * 0.3) + (parseFloat(ocenaPraca) * 0.1)).toFixed(2) 
                                                 : '—'
                                         )
                                     )
