@@ -68,6 +68,7 @@
             });
             const [srednieOcenStudia, setSrednieOcenStudia] = useState('');
             const [ocenaPraca, setOcenaPraca] = useState('');
+            const [ocenaEgzaminuOverride, setOcenaEgzaminuOverride] = useState('');
             const [deferredPrompt, setDeferredPrompt] = useState(null);
             const [showInstallButton, setShowInstallButton] = useState(false);
 
@@ -96,6 +97,14 @@
                     window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
                 };
             }, []);
+
+            // Update override when calculated exam grade changes
+            useEffect(() => {
+                const calculatedGrade = calculateFinalExamGrade();
+                if (calculatedGrade !== null && ocenaEgzaminuOverride === '') {
+                    setOcenaEgzaminuOverride(calculatedGrade.toString());
+                }
+            }, [question1.ocena, question2.ocena]);
 
             const handleInstallClick = () => {
                 if (deferredPrompt) {
@@ -127,6 +136,7 @@
                 });
                 setSrednieOcenStudia('');
                 setOcenaPraca('');
+                setOcenaEgzaminuOverride('');
                 setActiveTab('ocenianie');
             };
 
@@ -149,8 +159,12 @@
                 return 5.0;
             };
 
+            const getEffectiveExamGrade = () => {
+                return ocenaEgzaminuOverride ? parseFloat(ocenaEgzaminuOverride) : calculateFinalExamGrade();
+            };
+
             const calculateDiplomaGrade = () => {
-                const finalExamGrade = calculateFinalExamGrade();
+                const finalExamGrade = getEffectiveExamGrade();
                 if (!finalExamGrade || !ocenaPraca || !srednieOcenStudia) return null;
                 
                 const avgGrade = parseFloat(srednieOcenStudia);
@@ -174,9 +188,13 @@
                     return { grade: 5.0, showButtons: false, possibleGrades: [] };
                 }
 
-                if ((wiedza === 'Spełnione' && struktura === 'Częściowo spełnione') ||
-                    (wiedza === 'Częściowo spełnione' && struktura === 'Spełnione')) {
+                // Modified logic according to requirements
+                if (wiedza === 'Spełnione' && struktura === 'Częściowo spełnione') {
                     return { grade: null, showButtons: true, possibleGrades: [4.5, 4.0] };
+                }
+
+                if (wiedza === 'Częściowo spełnione' && struktura === 'Spełnione') {
+                    return { grade: null, showButtons: true, possibleGrades: [4.0, 3.5] };
                 }
 
                 if (wiedza === 'Częściowo spełnione' && struktura === 'Częściowo spełnione') {
@@ -311,6 +329,21 @@
                         React.createElement('div', { className: "bg-white rounded-lg border-2 border-blue-200 p-4 mb-6" },
                             React.createElement('div', { className: "space-y-4" },
                                 React.createElement('div', null,
+                                    React.createElement('label', { className: "block text-sm font-medium text-gray-700 mb-2" }, "Ocena z egzaminu dyplomowego"),
+                                    React.createElement('select', {
+                                        value: ocenaEgzaminuOverride,
+                                        onChange: (e) => setOcenaEgzaminuOverride(e.target.value),
+                                        className: "w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 focus:outline-none"
+                                    },
+                                        React.createElement('option', { value: "" }, "Wybierz ocenę..."),
+                                        React.createElement('option', { value: "3.0" }, "3.0"),
+                                        React.createElement('option', { value: "3.5" }, "3.5"),
+                                        React.createElement('option', { value: "4.0" }, "4.0"),
+                                        React.createElement('option', { value: "4.5" }, "4.5"),
+                                        React.createElement('option', { value: "5.0" }, "5.0")
+                                    )
+                                ),
+                                React.createElement('div', null,
                                     React.createElement('label', { className: "block text-sm font-medium text-gray-700 mb-2" }, "Średnia ocen ze studiów"),
                                     React.createElement('input', {
                                         type: "text",
@@ -378,8 +411,8 @@
                                     ),
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Ocena z egzaminu"),
-                                        React.createElement('td', { className: "p-2" }, calculateFinalExamGrade()?.toFixed(1) || '—'),
-                                        React.createElement('td', { className: "p-2" }, calculateFinalExamGrade() ? (calculateFinalExamGrade() * 0.3).toFixed(2) : '—')
+                                        React.createElement('td', { className: "p-2" }, getEffectiveExamGrade()?.toFixed(1) || '—'),
+                                        React.createElement('td', { className: "p-2" }, getEffectiveExamGrade() ? (getEffectiveExamGrade() * 0.3).toFixed(2) : '—')
                                     ),
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Ocena za pracę"),
@@ -389,8 +422,8 @@
                                     React.createElement('tr', { className: "border-t-2 border-gray-300 bg-gray-50" },
                                         React.createElement('td', { className: "p-2 font-bold", colSpan: "2" }, "Suma ważona:"),
                                         React.createElement('td', { className: "p-2 font-bold" },
-                                            calculateFinalExamGrade() && srednieOcenStudia && ocenaPraca ? 
-                                                ((parseFloat(srednieOcenStudia) * 0.6) + (calculateFinalExamGrade() * 0.3) + (parseFloat(ocenaPraca) * 0.1)).toFixed(2) 
+                                            getEffectiveExamGrade() && srednieOcenStudia && ocenaPraca ? 
+                                                ((parseFloat(srednieOcenStudia) * 0.6) + (getEffectiveExamGrade() * 0.3) + (parseFloat(ocenaPraca) * 0.1)).toFixed(2) 
                                                 : '—'
                                         )
                                     )
