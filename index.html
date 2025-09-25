@@ -101,10 +101,10 @@
             // Update override when calculated exam grade changes
             useEffect(() => {
                 const calculatedGrade = calculateFinalExamGrade();
-                if (calculatedGrade !== null && ocenaEgzaminuOverride === '') {
+                if (calculatedGrade !== null && (ocenaEgzaminuOverride === '' || ocenaEgzaminuOverride === null)) {
                     setOcenaEgzaminuOverride(calculatedGrade.toString());
                 }
-            }, [question1.ocena, question2.ocena]);
+            }, [question1.ocena, question2.ocena, ocenaEgzaminuOverride]);
 
             const handleInstallClick = () => {
                 if (deferredPrompt) {
@@ -160,7 +160,11 @@
             };
 
             const getEffectiveExamGrade = () => {
-                return ocenaEgzaminuOverride ? parseFloat(ocenaEgzaminuOverride) : calculateFinalExamGrade();
+                const calculatedGrade = calculateFinalExamGrade();
+                if (ocenaEgzaminuOverride && ocenaEgzaminuOverride !== '') {
+                    return parseFloat(ocenaEgzaminuOverride);
+                }
+                return calculatedGrade;
             };
 
             const calculateDiplomaGrade = () => {
