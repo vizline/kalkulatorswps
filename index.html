@@ -186,7 +186,7 @@
                 if (!finalExamGrade || !ocenaPraca || !srednieOcenStudia) return null;
                 
                 const avgGrade = parseFloat(srednieOcenStudia.replace(',', '.'));
-                const weighted = (avgGrade * 0.6) + (finalExamGrade * 0.3) + (parseFloat(ocenaPraca) * 0.1);
+                const weighted = (avgGrade * 0.6) + (finalExamGrade * 0.1) + (parseFloat(ocenaPraca) * 0.3);
                 
                 if (weighted < 3.25) return 3.0;
                 if (weighted < 3.75) return 3.5;
@@ -440,18 +440,18 @@
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Ocena pracy"),
                                         React.createElement('td', { className: "p-2" }, parseFloat(ocenaPraca).toFixed(1)),
-                                        React.createElement('td', { className: "p-2" }, (parseFloat(ocenaPraca) * 0.1).toFixed(2))
+                                        React.createElement('td', { className: "p-2" }, (parseFloat(ocenaPraca) * 0.3).toFixed(2))
                                     ),
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Ocena egzaminu"),
                                         React.createElement('td', { className: "p-2" }, getEffectiveExamGrade()?.toFixed(1) || '—'),
-                                        React.createElement('td', { className: "p-2" }, getEffectiveExamGrade() ? (getEffectiveExamGrade() * 0.3).toFixed(2) : '—')
+                                        React.createElement('td', { className: "p-2" }, getEffectiveExamGrade() ? (getEffectiveExamGrade() * 0.1).toFixed(2) : '—')
                                     ),
                                     React.createElement('tr', { className: "border-t-2 border-gray-300 bg-gray-50" },
                                         React.createElement('td', { className: "p-2 font-bold", colSpan: "2" }, "Suma ważona:"),
                                         React.createElement('td', { className: "p-2 font-bold" },
                                             getEffectiveExamGrade() && srednieOcenStudia && ocenaPraca ? 
-                                                ((parseFloat(srednieOcenStudia.replace(',', '.')) * 0.6) + (getEffectiveExamGrade() * 0.3) + (parseFloat(ocenaPraca) * 0.1)).toFixed(2) 
+                                                ((parseFloat(srednieOcenStudia.replace(',', '.')) * 0.6) + (getEffectiveExamGrade() * 0.1) + (parseFloat(ocenaPraca) * 0.3)).toFixed(2) 
                                                 : '—'
                                         )
                                     )
