@@ -1,4 +1,4 @@
-const CACHE_NAME = 'swps-obrony-v1';
+const CACHE_NAME = 'swps-obrony-v1.7';
 const urlsToCache = [
   './',
   './index.html',
@@ -8,7 +8,6 @@ const urlsToCache = [
   'https://unpkg.com/react-dom@18/umd/react-dom.development.js',
   'https://unpkg.com/@babel/standalone/babel.min.js'
 ];
-
 // Install event - cache resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -22,7 +21,6 @@ self.addEventListener('install', (event) => {
       })
   );
 });
-
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
   event.respondWith(
@@ -42,7 +40,6 @@ self.addEventListener('fetch', (event) => {
       })
   );
 });
-
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
