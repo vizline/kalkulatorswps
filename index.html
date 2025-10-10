@@ -297,7 +297,7 @@
                     ),
                     React.createElement('div', { className: "mt-4 p-3 bg-gray-50 rounded-md" },
                         React.createElement('div', { className: "text-sm font-medium text-gray-700 mb-2" }, "Ocena:"),
-                        question.ocena !== null && React.createElement('div', { className: "text-2xl font-bold text-green-600" }, question.ocena.toFixed(1)),
+                        question.ocena !== null && React.createElement('div', { className: "text-2xl font-bold text-green-600" }, question.ocena.toFixed(1).replace('.', ',')),
                         question.showButtons && React.createElement('div', { className: "space-y-2" },
                             React.createElement('div', { className: "text-sm text-gray-600 mb-2" }, "Wybierz ocenę:"),
                             question.possibleGrades.map(grade => 
@@ -305,7 +305,7 @@
                                     key: grade,
                                     onClick: () => selectGrade(questionNum, grade),
                                     className: "w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-bold text-lg"
-                                }, grade.toFixed(1))
+                                }, grade.toFixed(1).replace('.', ','))
                             )
                         ),
                         !question.ocena && !question.showButtons && React.createElement('div', { className: "text-gray-400" }, "Wypełnij oba kryteria")
@@ -344,7 +344,7 @@
                             React.createElement('h3', { className: "text-lg font-bold text-green-800 mb-4" }, "Ocena z egzaminu"),
                             React.createElement('div', { className: "p-3 bg-gray-50 rounded-md text-center" },
                                 calculateFinalExamGrade() !== null ?
-                                    React.createElement('div', { className: "text-3xl font-bold text-green-600" }, calculateFinalExamGrade().toFixed(1)) :
+                                    React.createElement('div', { className: "text-3xl font-bold text-green-600" }, calculateFinalExamGrade().toFixed(1).replace('.', ',')) :
                                     React.createElement('div', { className: "text-gray-400" }, "Oceń oba pytania aby zobaczyć wynik")
                             )
                         )
@@ -397,11 +397,11 @@
                                         className: "w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 focus:outline-none"
                                     },
                                         React.createElement('option', { value: "" }, "Wybierz ocenę..."),
-                                        React.createElement('option', { value: "3.0" }, "3.0"),
-                                        React.createElement('option', { value: "3.5" }, "3.5"),
-                                        React.createElement('option', { value: "4.0" }, "4.0"),
-                                        React.createElement('option', { value: "4.5" }, "4.5"),
-                                        React.createElement('option', { value: "5.0" }, "5.0")
+                                        React.createElement('option', { value: "3.0" }, "3,0"),
+                                        React.createElement('option', { value: "3.5" }, "3,5"),
+                                        React.createElement('option', { value: "4.0" }, "4,0"),
+                                        React.createElement('option', { value: "4.5" }, "4,5"),
+                                        React.createElement('option', { value: "5.0" }, "5,0")
                                     )
                                 ),
                                 React.createElement('div', null,
@@ -412,11 +412,11 @@
                                         className: "w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 focus:outline-none"
                                     },
                                         React.createElement('option', { value: "" }, "Wybierz ocenę..."),
-                                        React.createElement('option', { value: "3.0" }, "3.0"),
-                                        React.createElement('option', { value: "3.5" }, "3.5"),
-                                        React.createElement('option', { value: "4.0" }, "4.0"),
-                                        React.createElement('option', { value: "4.5" }, "4.5"),
-                                        React.createElement('option', { value: "5.0" }, "5.0")
+                                        React.createElement('option', { value: "3.0" }, "3,0"),
+                                        React.createElement('option', { value: "3.5" }, "3,5"),
+                                        React.createElement('option', { value: "4.0" }, "4,0"),
+                                        React.createElement('option', { value: "4.5" }, "4,5"),
+                                        React.createElement('option', { value: "5.0" }, "5,0")
                                     )
                                 )
                             )
@@ -434,24 +434,24 @@
                                 React.createElement('tbody', null,
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Średnia ze studiów"),
-                                        React.createElement('td', { className: "p-2" }, srednieOcenStudia ? parseFloat(srednieOcenStudia.replace(',', '.')).toFixed(2) : '—'),
-                                        React.createElement('td', { className: "p-2" }, srednieOcenStudia ? (parseFloat(srednieOcenStudia.replace(',', '.')) * 0.6).toFixed(2) : '—')
+                                        React.createElement('td', { className: "p-2" }, srednieOcenStudia ? parseFloat(srednieOcenStudia.replace(',', '.')).toFixed(2).replace('.', ',') : '—'),
+                                        React.createElement('td', { className: "p-2" }, srednieOcenStudia ? (parseFloat(srednieOcenStudia.replace(',', '.')) * 0.6).toFixed(2).replace('.', ',') : '—')
                                     ),
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Ocena pracy"),
-                                        React.createElement('td', { className: "p-2" }, parseFloat(ocenaPraca).toFixed(1)),
-                                        React.createElement('td', { className: "p-2" }, (parseFloat(ocenaPraca) * 0.3).toFixed(2))
+                                        React.createElement('td', { className: "p-2" }, parseFloat(ocenaPraca).toFixed(1).replace('.', ',')),
+                                        React.createElement('td', { className: "p-2" }, (parseFloat(ocenaPraca) * 0.3).toFixed(2).replace('.', ','))
                                     ),
                                     React.createElement('tr', { className: "border-b border-gray-100" },
                                         React.createElement('td', { className: "p-2" }, "Ocena egzaminu"),
-                                        React.createElement('td', { className: "p-2" }, getEffectiveExamGrade()?.toFixed(1) || '—'),
-                                        React.createElement('td', { className: "p-2" }, getEffectiveExamGrade() ? (getEffectiveExamGrade() * 0.1).toFixed(2) : '—')
+                                        React.createElement('td', { className: "p-2" }, getEffectiveExamGrade()?.toFixed(1).replace('.', ',') || '—'),
+                                        React.createElement('td', { className: "p-2" }, getEffectiveExamGrade() ? (getEffectiveExamGrade() * 0.1).toFixed(2).replace('.', ',') : '—')
                                     ),
                                     React.createElement('tr', { className: "border-t-2 border-gray-300 bg-gray-50" },
                                         React.createElement('td', { className: "p-2 font-bold", colSpan: "2" }, "Suma ważona:"),
                                         React.createElement('td', { className: "p-2 font-bold" },
                                             getEffectiveExamGrade() && srednieOcenStudia && ocenaPraca ? 
-                                                ((parseFloat(srednieOcenStudia.replace(',', '.')) * 0.6) + (getEffectiveExamGrade() * 0.1) + (parseFloat(ocenaPraca) * 0.3)).toFixed(2) 
+                                                ((parseFloat(srednieOcenStudia.replace(',', '.')) * 0.6) + (getEffectiveExamGrade() * 0.1) + (parseFloat(ocenaPraca) * 0.3)).toFixed(2).replace('.', ',') 
                                                 : '—'
                                         )
                                     )
@@ -462,7 +462,7 @@
                         calculateDiplomaGrade() && React.createElement('div', { className: "bg-white rounded-lg border-2 border-green-200 p-4" },
                             React.createElement('h3', { className: "text-lg font-bold text-green-800 mb-4" }, "Ocena na dyplomie"),
                             React.createElement('div', { className: "text-center p-4 bg-green-50 rounded-md" },
-                                React.createElement('div', { className: "text-4xl font-bold text-green-600" }, calculateDiplomaGrade().toFixed(1))
+                                React.createElement('div', { className: "text-4xl font-bold text-green-600" }, calculateDiplomaGrade().toFixed(1).replace('.', ','))
                             )
                         )
                     ),
